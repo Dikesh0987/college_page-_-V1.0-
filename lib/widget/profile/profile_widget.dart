@@ -1,12 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_page/widget/home/chat_room_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:college_page/core/extension/date_time_extension.dart';
-import 'package:college_page/core/theme/app_color.dart';
-import 'package:college_page/model/chat_room.dart';
 
-class ProfileWidget extends StatelessWidget {
+class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
+
+  @override
+  State<ProfileWidget> createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
+  // for getting user data
+  Map<String, dynamic> userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSetUserData();
+  }
+
+  Future<void> fetchAndSetUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (documentSnapshot.exists) {
+          setState(() {
+            userData = documentSnapshot.data() as Map<String, dynamic>;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching and setting user data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +65,7 @@ class ProfileWidget extends StatelessWidget {
             ],
           ),
         ),
+        Text('${userData['name'] ?? 'N/A'}')
       ],
     );
   }

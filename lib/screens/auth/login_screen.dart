@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
 import 'package:college_page/core/theme/app_color.dart';
 import 'package:college_page/core/theme/app_icons.dart';
@@ -18,10 +19,43 @@ class _LoginScreenState extends State<LoginScreen> {
   String _email = '';
   String _password = '';
 
-  void _submitForm() {
+  Future<bool> checkIfEmailExistsAndVerified(String email) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where("email", isEqualTo: email)
+          .where('verify', isEqualTo: true)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred. Please try again later.')),
+      );
+      return false;
+    }
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      AuthServices.signinUser(_email, _password, context);
+ 
+      bool emailExistsAndVerified = await checkIfEmailExistsAndVerified(_email);
+
+      if (emailExistsAndVerified) {
+        // Proceed with the sign-in process.
+        AuthServices.signinUser(_email, _password, context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email not verified or does not exist.')),
+        );
+      }
     }
   }
 

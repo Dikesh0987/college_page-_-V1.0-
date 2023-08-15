@@ -1,10 +1,63 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_page/screens/auth/login_screen.dart';
+
+import 'package:college_page/screens/auth/services/functions/logoutFunctions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:college_page/core/theme/app_color.dart';
 
-class HomeDesktopHeader extends StatelessWidget {
-  const HomeDesktopHeader({super.key});
+class HomeDesktopHeader extends StatefulWidget {
+  HomeDesktopHeader({super.key});
+
+  @override
+  State<HomeDesktopHeader> createState() => _HomeDesktopHeaderState();
+}
+
+class _HomeDesktopHeaderState extends State<HomeDesktopHeader> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+// for getting user data
+  Map<String, dynamic> userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSetUserData();
+  }
+
+  Future<void> fetchAndSetUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (documentSnapshot.exists) {
+          setState(() {
+            userData = documentSnapshot.data() as Map<String, dynamic>;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching and setting user data: $e');
+    }
+  }
+
+  // For logout
+
+  void _advancedSignOut(BuildContext context) async {
+    logOutService.userLogOut(context);
+  }
+
+  // For when user logged out then change login status
+  void updateUserStatus(String userId, Map<String, dynamic> newData) {
+    FirebaseFirestore.instance.collection('users').doc(userId).update(newData);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +161,7 @@ class HomeDesktopHeader extends StatelessWidget {
                 ),
                 PopupMenuItem(
                   child: GestureDetector(
-                    onTap: () async{
-                       await FirebaseAuth.instance.signOut();
-                    },
+                    onTap: () => _advancedSignOut(context),
                     child: Row(
                       children: [
                         Icon(Icons.logout_outlined, color: AppColor.red),

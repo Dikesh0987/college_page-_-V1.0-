@@ -1,22 +1,24 @@
-
+import 'package:college_page/model/college_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:college_page/core/extension/date_time_extension.dart';
 import 'package:college_page/core/theme/app_color.dart';
 import 'package:college_page/model/chat_room.dart';
 
-class ChatRoomWidget extends StatelessWidget {
-  const ChatRoomWidget({
-    super.key,
-    this.showBackButton = false,
-  });
+class ChatRoomWidget extends StatefulWidget {
+  final CollegeModel collegeModel;
 
-  final bool showBackButton;
+  ChatRoomWidget({required this.collegeModel});
 
+
+  @override
+  State<ChatRoomWidget> createState() => _ChatRoomWidgetState();
+}
+
+class _ChatRoomWidgetState extends State<ChatRoomWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: SafeArea( 
         child: Column(
           children: [
             Container(
@@ -30,19 +32,6 @@ class ChatRoomWidget extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  if (showBackButton) ...[
-                    IconButton(
-                      onPressed: () {
-                        // Implement your back button logic
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
-                      ),
-                      splashRadius: 20,
-                    ),
-                    const SizedBox(width: 16),
-                  ],
                   Container(
                     height: 48,
                     width: 48,
@@ -58,14 +47,14 @@ class ChatRoomWidget extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                    Navigator.pushNamed(context, '/collegeprofile');
+                        Navigator.pushNamed(context, '/collegeprofile');
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "name",
+                            widget.collegeModel.collegeName,
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                           const SizedBox(height: 6),

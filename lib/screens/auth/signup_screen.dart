@@ -31,7 +31,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
-      print('Error checking college: $e');
+       ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('College not listed')));
       return false;
     }
   }
@@ -52,8 +53,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 builder: (context) => FillDetailsScreen(email: email)));
         print('College Exist In Our Collection');
       } else {
-        // Email does not exist
-        print('College not found');
+        //College email does not exist
+       ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('College not found in list')));
       }
     }
   }

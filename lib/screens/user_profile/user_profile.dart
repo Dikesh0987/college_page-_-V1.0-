@@ -1,14 +1,9 @@
-import 'package:college_page/widget/college_profile/college_members.dart';
-import 'package:college_page/widget/college_profile/content_widget.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
-import 'package:college_page/widget/home/members_widget.dart';
 import 'package:college_page/widget/mobile/home_mobile_header.dart';
 import 'package:college_page/widget/user_profile/friends_widget.dart';
 import 'package:college_page/widget/user_profile/user_profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
-import 'package:college_page/widget/home/chat_room_widget.dart';
-
 
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
@@ -40,7 +35,7 @@ class MobileLayout extends StatelessWidget {
       children: const [
         HomeMobileHeader(),
         Expanded(
-          child: ContentWidget(),
+          child: UserProfileWidget(),
         ),
       ],
     );
@@ -55,7 +50,7 @@ class DesktopLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         // Padding(
         //   padding: const EdgeInsets.only(top: 24, left: 24),
         //   child: Text(
@@ -100,7 +95,7 @@ class TabletLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(

@@ -24,7 +24,6 @@ void main() async {
   }
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -32,22 +31,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "College Page",
+      title: "College Page...",
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       // Set themeMode here
       themeMode: ThemeMode.light,
       // initialRoute: AppRouteName.home,
-      home: StreamBuilder(
+      home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show a loading indicator while checking the authentication state
+            return CircularProgressIndicator();
+          } else if (snapshot.hasData && snapshot.data != null) {
+            // User is logged in
             return HomeScreen();
           } else {
+            // User is not logged in
             return LoginScreen();
           }
         },
       ),
+      // home: CollegeDataForm(),
       onGenerateRoute: AppRoute.generate,
       builder: (context, child) {
         return ResponsiveWrapper.builder(

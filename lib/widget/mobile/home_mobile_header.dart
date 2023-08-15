@@ -1,12 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:college_page/core/theme/app_color.dart';
+import 'package:college_page/screens/auth/services/functions/logoutFunctions.dart';
 
-class HomeMobileHeader extends StatelessWidget {
+class HomeMobileHeader extends StatefulWidget {
   const HomeMobileHeader({super.key});
 
   @override
+  State<HomeMobileHeader> createState() => _HomeMobileHeaderState();
+}
+
+class _HomeMobileHeaderState extends State<HomeMobileHeader> {
+  @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    void _advancedSignOut(BuildContext context) async {
+      logOutService.userLogOut(context);
+    }
+
+    // For when user logged out then change login status
+    void updateUserStatus(String userId, Map<String, dynamic> newData) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update(newData);
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -86,9 +110,7 @@ class HomeMobileHeader extends StatelessWidget {
                 ),
                 PopupMenuItem(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
+                    onTap: () => _advancedSignOut(context),
                     child: Row(
                       children: [
                         Icon(Icons.logout_outlined, color: AppColor.red),

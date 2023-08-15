@@ -1,19 +1,40 @@
-import 'package:flutter/cupertino.dart';
+import 'package:college_page/model/college_model.dart';
+import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:college_page/core/extension/date_time_extension.dart';
-import 'package:college_page/core/theme/app_color.dart';
-import 'package:college_page/model/chat_room.dart';
 
-class ContentWidget extends StatelessWidget {
+class ContentWidget extends StatefulWidget {
   const ContentWidget({
     super.key,
     this.showBackButton = false,
+    required this.collegeDoc,
   });
 
+  final CollegeModel collegeDoc;
   final bool showBackButton;
 
   @override
+  State<ContentWidget> createState() => _ContentWidgetState();
+}
+
+class _ContentWidgetState extends State<ContentWidget> {
+  @override
   Widget build(BuildContext context) {
+    final firestoreService = FirestoreService();
+
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    void _join() async {
+      final collegeId =
+          widget.collegeDoc.collegeUniqueId; // Initialize collegeId here
+
+      try {
+        await firestoreService.joinCollege(userId, collegeId);
+      } catch (e) {
+        print('Failed to join college: $e');
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -29,7 +50,7 @@ class ContentWidget extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  if (showBackButton) ...[
+                  if (widget.showBackButton) ...[
                     IconButton(
                       onPressed: () {
                         // Implement your back button logic
@@ -62,48 +83,50 @@ class ContentWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "College Names",
+                            widget.collegeDoc.collegeName,
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            "@college.ac.in",
+                            widget.collegeDoc.domain,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 48,
-                    child: TextButton.icon(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.call_outlined,
-                        color: Theme.of(context).textTheme.button?.color,
-                      ),
-                      label: Text(
-                        "Join",
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 48,
+                  //   child: TextButton.icon(
+                  //     onPressed: () => _join(),
+                  //     style: TextButton.styleFrom(
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(16),
+                  //       ),
+                  //     ),
+                  //     icon: Icon(
+                  //       Icons.call_outlined,
+                  //       color: Theme.of(context).textTheme.button?.color,
+                  //     ),
+                  //     label: Text(
+                  //       "Join",
+                  //       style: Theme.of(context).textTheme.button,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(width: 16),
                   SizedBox(
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _join();
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text("Chat"),
+                      child: const Text("Join"),
                     ),
                   ),
                 ],

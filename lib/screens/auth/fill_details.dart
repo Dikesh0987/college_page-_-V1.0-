@@ -19,11 +19,13 @@ class _FillDetailsScreenState extends State<FillDetailsScreen> {
 
   String _fullname = '';
   String _password = '';
+  final bool _verify = false;
+  final bool _status = false; 
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      AuthServices.signupUser(widget.email, _password, _fullname, context);
+      AuthServices.signupUser(widget.email, _password, _fullname,_verify,_status, context);
     }
   }
 

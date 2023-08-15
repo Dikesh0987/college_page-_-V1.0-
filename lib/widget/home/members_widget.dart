@@ -1,12 +1,62 @@
-import 'package:college_page/widget/home/chat_room_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_page/model/college_model.dart';
+import 'package:college_page/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:college_page/core/extension/date_time_extension.dart';
 import 'package:college_page/core/theme/app_color.dart';
-import 'package:college_page/model/chat_room.dart';
 
-class MembersWidget extends StatelessWidget {
-  const MembersWidget({super.key});
+class MembersWidget extends StatefulWidget {
+   MembersWidget({super.key, required this.collegeModel});
+  final CollegeModel? collegeModel;
+
+  @override
+  State<MembersWidget> createState() => _MembersWidgetState();
+}
+
+class _MembersWidgetState extends State<MembersWidget> {
+    late List<UserModel> userList;
+  bool isLoaded = false;
+
+  // final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayData(); // Fetch data when the widget initializes
+  }
+
+  _displayData() async {
+    try {
+      var userDocRef = FirebaseFirestore.instance
+          .collection("colleges")
+          .doc(widget.collegeModel?.collegeUniqueId);
+      var collconnSnapshot = await userDocRef.collection("collconn").get();
+
+      List<String> usersIds = [];
+      for (var collconnDoc in collconnSnapshot.docs) {
+        usersIds.add(collconnDoc.id);
+      }
+
+      var collection = FirebaseFirestore.instance.collection("users");
+      var data =
+          await collection.where(FieldPath.documentId, whereIn: usersIds).get();
+
+      List<UserModel> tempList = [];
+      for (var element in data.docs) {
+        tempList.add(UserModel.fromJson(element.data()));
+      }
+
+      setState(() {
+        userList = tempList;
+        isLoaded = true;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoaded = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +75,7 @@ class MembersWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              Text( 
                 "Members",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
@@ -46,41 +96,99 @@ class MembersWidget extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.only(bottom: 24),
-            itemCount: dummyChatRoom.length,
-            separatorBuilder: (_, __) => const Divider(
-              height: 1,
-            ),
-            itemBuilder: (context, index) {
-              return ChatRoomItem(
-                room: dummyChatRoom[index],
-                isSelected: false, // Set isSelected as appropriate
-              );
-            },
-          ),
-        )
+          child: isLoaded
+                ? StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("colleges")
+                        .doc(widget.collegeModel?.collegeUniqueId)
+                        .collection("collconn")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Text("No data available.");
+                      }
+
+                      List<String> collegeIds = [];
+                      for (var doc in snapshot.data!.docs) {
+                        collegeIds.add(doc.id);
+                      }
+
+                      return StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection("users")
+                            .where(FieldPath.documentId, whereIn: collegeIds)
+                            .snapshots(),
+                        builder: (context, userSnapshot) {
+                          if (userSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          }
+
+                          if (userSnapshot.hasError) {
+                            return Text("Error: ${userSnapshot.error}");
+                          }
+
+                          List<UserModel> userList = [];
+                          for (var doc in userSnapshot.data!.docs) {
+                            var userData = doc.data() as Map<String, dynamic>;
+                            userList.add(UserModel.fromJson(userData));
+                          }
+
+                          return ListView.builder(
+                            itemCount: userList.length,
+                            itemBuilder: (context, index) {
+                              return UserMembersCard(
+                                user: userList[index],
+                                isSelected: false,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  )
+                : Center(child: CircularProgressIndicator()))
       ],
     );
   }
 }
 
-class ChatRoomItem extends StatelessWidget {
-  const ChatRoomItem({
+class UserMembersCard extends StatelessWidget {
+  const UserMembersCard({
     super.key,
-    required this.room,
     required this.isSelected,
+    required this.user,
   });
 
-  final ChatRoom room;
+  final UserModel user;
   final bool isSelected;
+
+  // final firestoreService = FirestoreService();
+
+  // final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // void _join() async {
+  //   final collegeId = college.collegeUniqueId; // Initialize collegeId here
+
+  //   try {
+  //     await firestoreService.joinCollege(userId, collegeId);
+  //   } catch (e) {
+  //     print('Failed to join college: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, '/userprofile');
-      },
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -99,7 +207,7 @@ class ChatRoomItem extends StatelessWidget {
         child: Row(
           children: [
             Visibility(
-              visible: room.hasUnreadMessage,
+              visible: true,
               maintainState: true,
               maintainAnimation: true,
               maintainSize: true,
@@ -132,13 +240,13 @@ class ChatRoomItem extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   image: AssetImage(
-                                    room.picture,
+                                    '',
                                   ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                            if (room.isOnline)
+                            if (true)
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Container(
@@ -164,12 +272,12 @@ class ChatRoomItem extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              room.name,
+                              user.name,
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              room.username,
+                              user.email,
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],

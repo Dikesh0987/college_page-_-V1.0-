@@ -1,12 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_page/model/college_model.dart';
+import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
+import 'package:college_page/screens/college_profile/college_profile.dart';
+// import 'package:college_page/screens/auth/services/functions/joinwithcolleges.dart';
 import 'package:college_page/widget/home/chat_room_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/extension/date_time_extension.dart';
 import 'package:college_page/core/theme/app_color.dart';
 import 'package:college_page/model/chat_room.dart';
 
-class CollegesWidget extends StatelessWidget {
+class CollegesWidget extends StatefulWidget {
   const CollegesWidget({super.key});
+
+  @override
+  State<CollegesWidget> createState() => _CollegesWidgetState();
+}
+
+class _CollegesWidgetState extends State<CollegesWidget> {
+  late List<CollegeModel> collegesList;
+  bool isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayData(); // Fetch data when the widget initializes
+  }
+
+  _displayData() async {
+    try {
+      var collection = FirebaseFirestore.instance.collection("colleges");
+      var data = await collection.get();
+
+      List<CollegeModel> tempList = [];
+      data.docs.forEach((element) {
+        tempList.add(CollegeModel.fromJson(element
+            .data())); // Assuming CollegeModel has a constructor or factory method for JSON parsing
+      });
+
+      setState(() {
+        collegesList = tempList;
+        isLoaded = true;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoaded =
+            true; // Even if an error occurs, set isLoaded to true to render the UI
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,40 +90,51 @@ class CollegesWidget extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.only(bottom: 24),
-            itemCount: dummyChatRoom.length,
-            separatorBuilder: (_, __) => const Divider(
-              height: 1,
-            ),
-            itemBuilder: (context, index) {
-              return ChatRoomItem(
-                room: dummyChatRoom[index],
-                isSelected: false, // Set isSelected as appropriate
-              );
-            },
-          ),
-        )
+            child: isLoaded
+                ? ListView.builder(
+                    itemCount: collegesList.length,
+                    itemBuilder: (context, index) {
+                      return CollegesItem(
+                        college: collegesList[
+                            index], // Pass the individual CollegeModel object
+                        isSelected: false,
+                      );
+                    },
+                  )
+                : Center(child: CircularProgressIndicator()))
       ],
     );
   }
 }
 
-class ChatRoomItem extends StatelessWidget {
-  const ChatRoomItem({
+class CollegesItem extends StatelessWidget {
+  CollegesItem({
     super.key,
-    required this.room,
+    required this.college,
     required this.isSelected,
   });
 
-  final ChatRoom room;
+  final CollegeModel college;
   final bool isSelected;
 
-  @override
+  final firestoreService = FirestoreService();
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void _join() async {
+    final collegeId = college.collegeUniqueId; // Initialize collegeId here
+
+    try {
+      await firestoreService.joinCollege(userId, collegeId);
+    } catch (e) {
+      print('Failed to join college: $e');
+    }
+  }
+
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/collegeprofile');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CollegeProfile(collegeModel: college)));
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -99,7 +154,7 @@ class ChatRoomItem extends StatelessWidget {
         child: Row(
           children: [
             Visibility(
-              visible: room.hasUnreadMessage,
+              visible: isSelected,
               maintainState: true,
               maintainAnimation: true,
               maintainSize: true,
@@ -131,14 +186,12 @@ class ChatRoomItem extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  image: AssetImage(
-                                    room.picture,
-                                  ),
+                                  image: NetworkImage(college.logo),
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                            if (room.isOnline)
+                            if (true)
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Container(
@@ -164,19 +217,19 @@ class ChatRoomItem extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              room.name,
+                              college.collegeName,
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              room.username,
+                              college.domain,
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () => _join(),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(

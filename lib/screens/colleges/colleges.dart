@@ -1,15 +1,20 @@
 import 'package:college_page/widget/colleges/colleges_widget.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
+import 'package:college_page/widget/home/chats_widget.dart';
 import 'package:college_page/widget/home/members_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
 import 'package:college_page/widget/home/chat_room_widget.dart';
-import 'package:college_page/widget/home/chats_widget.dart';
 import 'package:college_page/widget/mobile/home_mobile_header.dart';
 
-class CollegesScreen extends StatelessWidget {
+class CollegesScreen extends StatefulWidget {
   const CollegesScreen({super.key});
 
+  @override
+  State<CollegesScreen> createState() => _CollegesScreenState();
+}
+
+class _CollegesScreenState extends State<CollegesScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -27,12 +32,6 @@ class MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final state = // Get your ChatRoomsCubit state or initialize it
-
-    // if (state.selectedChatRoom != null) {
-    //   return const ChatRoomWidget(showBackButton: true);
-    // }
-
     return Column(
       children: const [
         HomeMobileHeader(),
@@ -44,15 +43,24 @@ class MobileLayout extends StatelessWidget {
   }
 }
 
-class DesktopLayout extends StatelessWidget {
+class DesktopLayout extends StatefulWidget {
   const DesktopLayout({super.key});
+
+  @override
+  State<DesktopLayout> createState() => _DesktopLayoutState();
+}
+
+class _DesktopLayoutState extends State<DesktopLayout> {
+  void _rebuildChatRoom() {
+    setState(() {}); // Trigger a rebuild of the ChatRoomWidget
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
@@ -70,17 +78,18 @@ class DesktopLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   flex: 2,
-                  child: ChatsWidget(),
+                  child: ChatsWidget(onChatButtonClicked: (String ) {  },
+                 
+                  ),
                 ),
                 VerticalDivider(),
                 Expanded(
                   flex: 4,
                   child: CollegesWidget(),
                 ),
-             
               ],
             ),
           ),
@@ -90,15 +99,24 @@ class DesktopLayout extends StatelessWidget {
   }
 }
 
-class TabletLayout extends StatelessWidget {
+class TabletLayout extends StatefulWidget {
   const TabletLayout({super.key});
 
   @override
+  State<TabletLayout> createState() => _TabletLayoutState();
+}
+
+class _TabletLayoutState extends State<TabletLayout> {
+  @override
   Widget build(BuildContext context) {
+    void _rebuildChatRoom() {
+      setState(() {}); // Trigger a rebuild of the ChatRoomWidget
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
@@ -116,10 +134,10 @@ class TabletLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   flex: 2,
-                  child: ChatsWidget(),
+                  child: ChatsWidget(onChatButtonClicked: (String ) {  },),
                 ),
                 VerticalDivider(),
                 Expanded(

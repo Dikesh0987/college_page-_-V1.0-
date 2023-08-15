@@ -1,19 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_page/screens/auth/services/functions/firebaseFunctions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthServices {
-  static signupUser(
-      String email, String password, String name, BuildContext context) async {
+  static signupUser(String email, String password, String name, bool verify,
+      bool status, BuildContext context) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
       await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
       await FirebaseAuth.instance.currentUser!.updateEmail(email);
-      await FirestoreServices.saveUser(name, email, userCredential.user!.uid);
+      await FirestoreServices.saveUser(
+          name, email, password, verify, status, userCredential.user!.uid);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Registration Successful')));
+      // Redirect to the next screen after successful signup
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -33,10 +37,16 @@ class AuthServices {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      updateUserStatus(userId, {
+        'status': true,
+      });
+
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('You are Logged in')));
 
-          Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -47,4 +57,9 @@ class AuthServices {
       }
     }
   }
+}
+
+// For when user logged in then change login status
+void updateUserStatus(String userId, Map<String, dynamic> newData) {
+  FirebaseFirestore.instance.collection('users').doc(userId).update(newData);
 }

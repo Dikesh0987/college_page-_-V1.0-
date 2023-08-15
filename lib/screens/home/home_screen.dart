@@ -1,3 +1,4 @@
+import 'package:college_page/model/college_model.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
 import 'package:college_page/widget/home/members_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,37 +25,60 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class MobileLayout extends StatelessWidget {
+class MobileLayout extends StatefulWidget {
   const MobileLayout({super.key});
 
   @override
+  State<MobileLayout> createState() => _MobileLayoutState();
+}
+
+class _MobileLayoutState extends State<MobileLayout> {
+  CollegeModel? _selectedCollege;
+
+  void _handleChatButtonClicked(CollegeModel college) {
+    setState(() {
+      _selectedCollege = college; // Store the received CollegeModel
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // final state = // Get your ChatRoomsCubit state or initialize it
-
-    // if (state.selectedChatRoom != null) {
-    //   return const ChatRoomWidget(showBackButton: true);
-    // }
-
     return Column(
-      children: const [
+      children: [
         HomeMobileHeader(),
         Expanded(
-          child: ChatsWidget(),
+          child: ChatsWidget(
+            onChatButtonClicked: _handleChatButtonClicked,
+          ),
         ),
       ],
     );
   }
 }
 
-class DesktopLayout extends StatelessWidget {
+class DesktopLayout extends StatefulWidget {
   const DesktopLayout({super.key});
+
+  @override
+  State<DesktopLayout> createState() => _DesktopLayoutState();
+}
+
+class _DesktopLayoutState extends State<DesktopLayout> {
+  CollegeModel? _selectedCollege, _selectedCollegeMember;
+
+  void _handleChatButtonClicked(CollegeModel college) {
+    setState(() {
+      _selectedCollege = college;
+      _selectedCollegeMember = college; // Store the received CollegeModel
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         // Padding(
         //   padding: const EdgeInsets.only(top: 24, left: 24),
         //   child: Text(
@@ -72,21 +96,29 @@ class DesktopLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   flex: 3,
-                  child: ChatsWidget(),
+                  child: ChatsWidget(
+                    onChatButtonClicked: _handleChatButtonClicked,
+                  ),
                 ),
-                VerticalDivider(),
-                Expanded(
-                  flex: 4,
-                  child: ChatRoomWidget(),
-                ),
-                VerticalDivider(),
-                Expanded(
-                  flex: 2,
-                  child: MembersWidget(),
-                ),
+                const VerticalDivider(),
+                if (_selectedCollege != null)
+                  Expanded(
+                    flex: 4,
+                    child: ChatRoomWidget(
+                      collegeModel: _selectedCollege!,
+                    ),
+                  ),
+                const VerticalDivider(),
+                if (_selectedCollege != null)
+                  Expanded(
+                    flex: 2,
+                    child: _selectedCollegeMember != null
+                        ? MembersWidget(collegeModel: _selectedCollegeMember)
+                        : CircularProgressIndicator(),
+                  ),
               ],
             ),
           ),
@@ -96,15 +128,28 @@ class DesktopLayout extends StatelessWidget {
   }
 }
 
-class TabletLayout extends StatelessWidget {
+class TabletLayout extends StatefulWidget {
   const TabletLayout({super.key});
+
+  @override
+  State<TabletLayout> createState() => _TabletLayoutState();
+}
+
+class _TabletLayoutState extends State<TabletLayout> {
+  CollegeModel? _selectedCollege;
+
+  void _handleChatButtonClicked(CollegeModel college) {
+    setState(() {
+      _selectedCollege = college; // Store the received CollegeModel
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
@@ -122,16 +167,21 @@ class TabletLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   flex: 3,
-                  child: ChatsWidget(),
+                  child: ChatsWidget(
+                    onChatButtonClicked: _handleChatButtonClicked,
+                  ),
                 ),
                 VerticalDivider(),
-                Expanded(
-                  flex: 4,
-                  child: ChatRoomWidget(),
-                ),
+                if (_selectedCollege != null)
+                  Expanded(
+                    flex: 4,
+                    child: ChatRoomWidget(
+                      collegeModel: _selectedCollege!,
+                    ),
+                  ),
               ],
             ),
           ),

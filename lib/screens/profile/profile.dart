@@ -52,7 +52,7 @@ class DesktopLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         // Padding(
         //   padding: const EdgeInsets.only(top: 24, left: 24),
         //   child: Text(
@@ -97,7 +97,7 @@ class TabletLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const HomeDesktopHeader(),
+        HomeDesktopHeader(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
