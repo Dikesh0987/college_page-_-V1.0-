@@ -1,3 +1,4 @@
+import 'package:college_page/model/user_model.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
 import 'package:college_page/widget/mobile/home_mobile_header.dart';
 import 'package:college_page/widget/user_profile/friends_widget.dart';
@@ -6,45 +7,55 @@ import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
 
 class UserProfile extends StatelessWidget {
-  const UserProfile({super.key});
+  const UserProfile({super.key, required this.selectedUser,});
+
+  final UserModel selectedUser;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       body: ResponsiveScreen(
-        mobile: MobileLayout(),
-        tablet: TabletLayout(),
-        dekstop: DesktopLayout(),
+        mobile: MobileLayout(selectedUser: selectedUser,),
+        tablet: TabletLayout(selectedUser: selectedUser,),
+        dekstop: DesktopLayout(selectedUser: selectedUser,),
       ),
     );
   }
 }
 
-class MobileLayout extends StatelessWidget {
-  const MobileLayout({super.key});
+class MobileLayout extends StatefulWidget {
+  const MobileLayout({super.key, required this.selectedUser,});
+
+  final UserModel selectedUser;
 
   @override
+  State<MobileLayout> createState() => _MobileLayoutState();
+}
+
+class _MobileLayoutState extends State<MobileLayout> {
+  @override
   Widget build(BuildContext context) {
-    // final state = // Get your ChatRoomsCubit state or initialize it
-
-    // if (state.selectedChatRoom != null) {
-    //   return const ChatRoomWidget(showBackButton: true);
-    // }
-
     return Column(
-      children: const [
+      children: [
         HomeMobileHeader(),
         Expanded(
-          child: UserProfileWidget(),
+          child: UserProfileWidget(selectedUser: widget.selectedUser,),
         ),
       ],
     );
   }
 }
 
-class DesktopLayout extends StatelessWidget {
-  const DesktopLayout({super.key});
+class DesktopLayout extends StatefulWidget {
+  const DesktopLayout({super.key, required this.selectedUser,});
 
+  final UserModel selectedUser;
+
+  @override
+  State<DesktopLayout> createState() => _DesktopLayoutState();
+}
+
+class _DesktopLayoutState extends State<DesktopLayout> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -68,15 +79,15 @@ class DesktopLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children:  [
                 Expanded(
                   flex: 4,
-                  child: UserProfileWidget(),
+                  child: UserProfileWidget(selectedUser: widget.selectedUser,),
                 ),
                 VerticalDivider(),
                 Expanded(
                   flex: 2,
-                  child: FriendsWidget(),
+                  child: FriendsWidget(userDoc: widget.selectedUser,),
                 ),
               ],
             ),
@@ -87,9 +98,15 @@ class DesktopLayout extends StatelessWidget {
   }
 }
 
-class TabletLayout extends StatelessWidget {
-  const TabletLayout({super.key});
+class TabletLayout extends StatefulWidget {
+  const TabletLayout({super.key, required this.selectedUser,});
 
+  final UserModel selectedUser;
+  @override
+  State<TabletLayout> createState() => _TabletLayoutState();
+}
+
+class _TabletLayoutState extends State<TabletLayout> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -113,15 +130,15 @@ class TabletLayout extends StatelessWidget {
               ),
             ),
             child: Row(
-              children: const [
+              children:  [
                 Expanded(
                   flex: 3,
-                  child: UserProfileWidget(),
+                  child: UserProfileWidget(selectedUser: widget.selectedUser,),
                 ),
                 VerticalDivider(),
                 Expanded(
                   flex: 4,
-                  child: FriendsWidget(),
+                  child: FriendsWidget(userDoc: widget.selectedUser,),
                 ),
               ],
             ),

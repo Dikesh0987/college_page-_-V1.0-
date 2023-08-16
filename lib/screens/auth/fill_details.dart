@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
 import 'package:college_page/core/theme/app_color.dart';
 import 'package:college_page/core/theme/app_icons.dart';
@@ -6,9 +7,10 @@ import 'package:college_page/screens/auth/services/functions/authFunctions.dart'
 import 'package:flutter/material.dart';
 
 class FillDetailsScreen extends StatefulWidget {
-  const FillDetailsScreen({Key? key, required this.email}) : super(key: key);
+  const FillDetailsScreen({Key? key, required this.email,required this.collegeSnapshot}) : super(key: key);
 
   final String email;
+    final DocumentSnapshot collegeSnapshot;
 
   @override
   State<FillDetailsScreen> createState() => _FillDetailsScreenState();
@@ -25,7 +27,7 @@ class _FillDetailsScreenState extends State<FillDetailsScreen> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      AuthServices.signupUser(widget.email, _password, _fullname,_verify,_status, context);
+      AuthServices.signupUser(widget.email, _password, _fullname,_verify, _status,widget.collegeSnapshot.id, context);
     }
   }
 

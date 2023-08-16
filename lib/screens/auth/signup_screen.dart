@@ -44,13 +44,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
       bool emailExists = await checkIfEmailExists(epart[1]);
 
+
+
       if (emailExists) {
         // College email exists, perform login logic here
+
+        QuerySnapshot collegesSnapshot = await FirebaseFirestore.instance.collection('colleges')
+        .where('domain', isEqualTo: epart[1])
+        .get();
+DocumentSnapshot collegeSnapshot = collegesSnapshot.docs.first;
+
 
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => FillDetailsScreen(email: email)));
+                builder: (context) => FillDetailsScreen(collegeSnapshot: collegeSnapshot, email: email,)));
         print('College Exist In Our Collection');
       } else {
         //College email does not exist

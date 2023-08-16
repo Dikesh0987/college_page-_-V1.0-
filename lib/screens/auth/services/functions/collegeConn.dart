@@ -30,4 +30,30 @@ class FirestoreService {
       rethrow; // Rethrow the exception for error handling
     }
   }
+
+  // for join like friends
+
+  Future<void> friendsConn(String userId, String otherUserId) async {
+    try {
+      final userDocRef = usersCollection.doc(userId);
+      final connectionSubcollection = userDocRef.collection('friendconn');
+
+      await connectionSubcollection.doc(otherUserId).set({'status': 'pending'});
+      print('User $userId joined friends $otherUserId');
+    } catch (e) {
+      print('Error joining college: $e');
+      rethrow; // Rethrow the exception for error handling
+    }
+
+    try {
+      final userDocRef = usersCollection.doc(otherUserId);
+      final connectionSubcollection = userDocRef.collection('friendconn');
+
+      await connectionSubcollection.doc(userId).set({'status': 'pending'});
+      print('User $otherUserId joined friends $userId');
+    } catch (e) {
+      print('Error joining college: $e');
+      rethrow; // Rethrow the exception for error handling
+    }
+  }
 }

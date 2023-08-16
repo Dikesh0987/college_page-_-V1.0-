@@ -150,7 +150,7 @@ class _ChatsWidgetState extends State<ChatsWidget> {
                                 doc.data() as Map<String, dynamic>;
                             collegesList
                                 .add(CollegeModel.fromJson(collegeData));
-                          });
+                          }); 
 
                           return ListView.builder(
                             itemCount: collegesList.length,

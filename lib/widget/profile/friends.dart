@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:college_page/model/college_model.dart';
 import 'package:college_page/model/user_model.dart';
 import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
 import 'package:college_page/screens/user_profile/user_profile.dart';
@@ -7,18 +6,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/theme/app_color.dart';
+import 'package:college_page/model/chat_room.dart';
 
-class MembersWidget extends StatefulWidget {
-  MembersWidget({super.key, required this.collegeModel, required this.onFriendButtonClicked,});
+class ProfileFriendsWidget extends StatefulWidget {
+  const ProfileFriendsWidget({super.key});
 
-  final CollegeModel? collegeModel;
-final Function(UserModel) onFriendButtonClicked;
   @override
-  State<MembersWidget> createState() => _MembersWidgetState();
+  State<ProfileFriendsWidget> createState() => _ProfileFriendsWidgetState();
 }
 
-class _MembersWidgetState extends State<MembersWidget> {
-  late List<UserModel> userList;
+class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
+   late List<UserModel> userList;
   bool isLoaded = false;
 
   // final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -29,12 +27,14 @@ class _MembersWidgetState extends State<MembersWidget> {
     _displayData(); // Fetch data when the widget initializes
   }
 
+   User? user = FirebaseAuth.instance.currentUser;
+
   _displayData() async {
-    try { 
+    try {
       var userDocRef = FirebaseFirestore.instance
-          .collection("colleges")
-          .doc(widget.collegeModel?.collegeUniqueId);
-      var collconnSnapshot = await userDocRef.collection("collconn").get();
+          .collection("users")
+          .doc(user!.uid);
+      var collconnSnapshot = await userDocRef.collection("friendconn").get();
 
       List<String> usersIds = [];
       for (var collconnDoc in collconnSnapshot.docs) {
@@ -61,7 +61,7 @@ class _MembersWidgetState extends State<MembersWidget> {
       });
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -80,7 +80,7 @@ class _MembersWidgetState extends State<MembersWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Members",
+                "Friends",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               GestureDetector(
@@ -100,12 +100,12 @@ class _MembersWidgetState extends State<MembersWidget> {
           ),
         ),
         Expanded(
-            child: isLoaded
+          child:  isLoaded
                 ? StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
-                        .collection("colleges")
-                        .doc(widget.collegeModel?.collegeUniqueId)
-                        .collection("collconn")
+                        .collection("users")
+                        .doc(user!.uid)
+                        .collection("friendconn")
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -151,8 +151,8 @@ class _MembersWidgetState extends State<MembersWidget> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: (){
-                                      UserModel user = userList[index];
-                                  widget.onFriendButtonClicked(user);
+                                  //     UserModel user = userList[index];
+                                  // widget.onFriendButtonClicked(user);
                                 },
                                 child: UserMembersCard(
                                   user: userList[index],
@@ -170,6 +170,7 @@ class _MembersWidgetState extends State<MembersWidget> {
     );
   }
 }
+
 
 class UserMembersCard extends StatelessWidget {
   UserMembersCard({

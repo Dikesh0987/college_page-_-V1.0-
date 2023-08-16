@@ -1,5 +1,6 @@
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
 import 'package:college_page/widget/home/members_widget.dart';
+import 'package:college_page/widget/profile/friends.dart';
 import 'package:college_page/widget/profile/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
@@ -72,13 +73,13 @@ class DesktopLayout extends StatelessWidget {
             child: Row(
               children: const [
                 Expanded(
-                  flex: 2,
+                  flex: 4,
                   child: ProfileWidget(),
                 ),
                 VerticalDivider(),
                 Expanded(
-                  flex: 4,
-                  child: ProfileWidget(),
+                  flex: 2,
+                    child: ProfileFriendsWidget(),
                 ),
               ],
             ),
@@ -117,13 +118,13 @@ class TabletLayout extends StatelessWidget {
             child: Row(
               children: const [
                 Expanded(
-                  flex: 2,
+                  flex: 4,
                   child: ProfileWidget(),
                 ),
                 VerticalDivider(),
                 Expanded(
-                  flex: 4,
-                  child: ProfileWidget(),
+                  flex: 2,
+                  child: ProfileFriendsWidget(),
                 ),
               ],
             ),

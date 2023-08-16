@@ -1,19 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
 import 'package:college_page/screens/auth/services/functions/firebaseFunctions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthServices {
   static signupUser(String email, String password, String name, bool verify,
-      bool status, BuildContext context) async {
+      bool status, String collegeId, BuildContext context) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
       await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
       await FirebaseAuth.instance.currentUser!.updateEmail(email);
-      await FirestoreServices.saveUser(
-          name, email, password, verify, status, userCredential.user!.uid);
+      await FirestoreServices.saveUser(name, email, password, verify, status,
+          userCredential.user!.uid, collegeId);
+      
+      FirestoreServices.saveuserIn(userCredential.user!.uid, collegeId);
+
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Registration Successful')));
       // Redirect to the next screen after successful signup

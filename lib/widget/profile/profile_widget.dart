@@ -15,7 +15,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   // for getting user data
   Map<String, dynamic> userData = {};
 
-  @override
+  @override 
   void initState() {
     super.initState();
     fetchAndSetUserData();
@@ -28,7 +28,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       if (user != null) {
         DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
             .collection('users')
-            .doc(user.uid)
+            .doc(user.uid) 
             .get();
         if (documentSnapshot.exists) {
           setState(() {

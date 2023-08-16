@@ -1,17 +1,37 @@
+import 'package:college_page/model/user_model.dart';
+import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/extension/date_time_extension.dart';
 import 'package:college_page/core/theme/app_color.dart';
 import 'package:college_page/model/chat_room.dart';
 
-class UserProfileWidget extends StatelessWidget {
-  const UserProfileWidget({
-    super.key,
-    this.showBackButton = false,
-  });
-
+class UserProfileWidget extends StatefulWidget {
+  const UserProfileWidget(
+      {super.key, this.showBackButton = false, required this.selectedUser,});
   final bool showBackButton;
+  final UserModel selectedUser;
 
+  @override
+  State<UserProfileWidget> createState() => _UserProfileWidgetState();
+}
+
+class _UserProfileWidgetState extends State<UserProfileWidget> {
+
+  final firestoreService = FirestoreService();
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void _joinFriend() async {
+    final otherUserId = widget.selectedUser.userunique_id; // Initialize collegeId here
+
+    try {
+      await firestoreService.friendsConn(userId, otherUserId);
+    } catch (e) {
+      print('Failed to join friend: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +49,7 @@ class UserProfileWidget extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  if (showBackButton) ...[
+                  if (widget.showBackButton) ...[
                     IconButton(
                       onPressed: () {
                         // Implement your back button logic
@@ -62,7 +82,7 @@ class UserProfileWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "College Names",
+                            widget.selectedUser.name,
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                           const SizedBox(height: 6),
@@ -97,13 +117,13 @@ class UserProfileWidget extends StatelessWidget {
                   SizedBox(
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _joinFriend,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text("Chat"),
+                      child: const Text("Join"),
                     ),
                   ),
                 ],

@@ -1,4 +1,6 @@
 import 'package:college_page/model/college_model.dart';
+import 'package:college_page/model/user_model.dart';
+import 'package:college_page/screens/user_profile/user_profile.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
 import 'package:college_page/widget/home/members_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,11 +67,24 @@ class DesktopLayout extends StatefulWidget {
 
 class _DesktopLayoutState extends State<DesktopLayout> {
   CollegeModel? _selectedCollege, _selectedCollegeMember;
+  UserModel? _selectedUser, _selectedUserMember;
 
   void _handleChatButtonClicked(CollegeModel college) {
     setState(() {
       _selectedCollege = college;
       _selectedCollegeMember = college; // Store the received CollegeModel
+    });
+  }
+
+  void _handlefriendButtonClicked(UserModel user) {
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> UserProfile(selectedUser: user,
+
+    )));
+
+
+    setState(() {
+      _selectedUser = user;
     });
   }
 
@@ -116,7 +131,11 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                   Expanded(
                     flex: 2,
                     child: _selectedCollegeMember != null
-                        ? MembersWidget(collegeModel: _selectedCollegeMember)
+                        ? MembersWidget(
+                            collegeModel: _selectedCollegeMember,
+                            onFriendButtonClicked: _handlefriendButtonClicked,
+                          
+                          )
                         : CircularProgressIndicator(),
                   ),
               ],

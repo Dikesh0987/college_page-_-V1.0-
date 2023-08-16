@@ -36,13 +36,6 @@ class AppRoute {
     }
   
     switch (settings.name) {
-      case AppRouteName.userprofile:
-        return MaterialPageRoute(
-          builder: (_) => const UserProfile(),
-          settings: settings,
-        );
-    }
-    switch (settings.name) {
       case AppRouteName.colleges:
         return MaterialPageRoute(
           builder: (_) => const CollegesScreen(),
