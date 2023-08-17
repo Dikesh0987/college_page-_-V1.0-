@@ -16,7 +16,7 @@ class ProfileFriendsWidget extends StatefulWidget {
 }
 
 class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
-   late List<UserModel> userList;
+  late List<UserModel> userList;
   bool isLoaded = false;
 
   // final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -27,13 +27,12 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
     _displayData(); // Fetch data when the widget initializes
   }
 
-   User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
 
   _displayData() async {
     try {
-      var userDocRef = FirebaseFirestore.instance
-          .collection("users")
-          .doc(user!.uid);
+      var userDocRef =
+          FirebaseFirestore.instance.collection("users").doc(user!.uid);
       var collconnSnapshot = await userDocRef.collection("friendconn").get();
 
       List<String> usersIds = [];
@@ -61,7 +60,7 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -100,7 +99,7 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
           ),
         ),
         Expanded(
-          child:  isLoaded
+            child: isLoaded
                 ? StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection("users")
@@ -109,7 +108,9 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -133,7 +134,9 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
                         builder: (context, userSnapshot) {
                           if (userSnapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
 
                           if (userSnapshot.hasError) {
@@ -150,7 +153,7 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
                             itemCount: userList.length,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                onTap: (){
+                                onTap: () {
                                   //     UserModel user = userList[index];
                                   // widget.onFriendButtonClicked(user);
                                 },
@@ -170,7 +173,6 @@ class _ProfileFriendsWidgetState extends State<ProfileFriendsWidget> {
     );
   }
 }
-
 
 class UserMembersCard extends StatelessWidget {
   UserMembersCard({
@@ -201,7 +203,11 @@ class UserMembersCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => UserProfile(selectedUser: user,)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => UserProfile(
+                      selectedUser: user,
+                    )));
       },
       child: Container(
         padding: const EdgeInsets.all(16),

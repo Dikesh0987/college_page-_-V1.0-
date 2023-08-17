@@ -13,7 +13,6 @@ class ChatsWidget extends StatefulWidget {
   final Function(CollegeModel) onChatButtonClicked;
 
   ChatsWidget({required this.onChatButtonClicked});
-  
 
   @override
   State<ChatsWidget> createState() => _ChatsWidgetState();
@@ -113,7 +112,9 @@ class _ChatsWidgetState extends State<ChatsWidget> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -137,7 +138,9 @@ class _ChatsWidgetState extends State<ChatsWidget> {
                         builder: (context, collegeSnapshot) {
                           if (collegeSnapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
 
                           if (collegeSnapshot.hasError) {
@@ -150,7 +153,7 @@ class _ChatsWidgetState extends State<ChatsWidget> {
                                 doc.data() as Map<String, dynamic>;
                             collegesList
                                 .add(CollegeModel.fromJson(collegeData));
-                          }); 
+                          });
 
                           return ListView.builder(
                             itemCount: collegesList.length,

@@ -9,10 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:college_page/core/theme/app_color.dart';
 
 class MembersWidget extends StatefulWidget {
-  MembersWidget({super.key, required this.collegeModel, required this.onFriendButtonClicked,});
+  MembersWidget({
+    super.key,
+    required this.collegeModel,
+    required this.onFriendButtonClicked,
+  });
 
   final CollegeModel? collegeModel;
-final Function(UserModel) onFriendButtonClicked;
+  final Function(UserModel) onFriendButtonClicked;
   @override
   State<MembersWidget> createState() => _MembersWidgetState();
 }
@@ -30,7 +34,7 @@ class _MembersWidgetState extends State<MembersWidget> {
   }
 
   _displayData() async {
-    try { 
+    try {
       var userDocRef = FirebaseFirestore.instance
           .collection("colleges")
           .doc(widget.collegeModel?.collegeUniqueId);
@@ -109,7 +113,9 @@ class _MembersWidgetState extends State<MembersWidget> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -133,7 +139,9 @@ class _MembersWidgetState extends State<MembersWidget> {
                         builder: (context, userSnapshot) {
                           if (userSnapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
 
                           if (userSnapshot.hasError) {
@@ -150,8 +158,8 @@ class _MembersWidgetState extends State<MembersWidget> {
                             itemCount: userList.length,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                onTap: (){
-                                      UserModel user = userList[index];
+                                onTap: () {
+                                  UserModel user = userList[index];
                                   widget.onFriendButtonClicked(user);
                                 },
                                 child: UserMembersCard(
@@ -200,7 +208,11 @@ class UserMembersCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => UserProfile(selectedUser: user,)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => UserProfile(
+                      selectedUser: user,
+                    )));
       },
       child: Container(
         padding: const EdgeInsets.all(16),

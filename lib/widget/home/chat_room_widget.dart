@@ -9,7 +9,6 @@ class ChatRoomWidget extends StatefulWidget {
 
   ChatRoomWidget({required this.collegeModel});
 
-
   @override
   State<ChatRoomWidget> createState() => _ChatRoomWidgetState();
 }
@@ -18,7 +17,7 @@ class _ChatRoomWidgetState extends State<ChatRoomWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea( 
+      body: SafeArea(
         child: Column(
           children: [
             Container(
@@ -101,96 +100,96 @@ class _ChatRoomWidgetState extends State<ChatRoomWidget> {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                reverse: true,
-                padding: const EdgeInsets.all(24),
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: AppColor.primaryColor.withOpacity(0.1),
-                          ),
-                          child: Text(
-                            "fds",
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 16,
-              ),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Theme.of(context).dividerColor,
-                ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    splashRadius: 20,
-                    icon: const Icon(
-                      Icons.emoji_emotions_outlined,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  IconButton(
-                    onPressed: () {},
-                    splashRadius: 20,
-                    icon: const Icon(
-                      CupertinoIcons.photo,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      minLines: 1,
-                      maxLines: 5,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Message....",
-                      ),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  IconButton(
-                    onPressed: () {},
-                    splashRadius: 20,
-                    icon: const Icon(
-                      CupertinoIcons.paperplane,
-                      size: 20,
-                    ),
-                  ),
-                ],
-              ),
-            )
+            // Expanded(
+            //   child: ListView.builder(
+            //     reverse: true,
+            //     padding: const EdgeInsets.all(24),
+            //     itemCount: 1,
+            //     itemBuilder: (context, index) {
+            //       return Column(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           Align(
+            //             alignment: Alignment.center,
+            //             child: Container(
+            //               padding: const EdgeInsets.symmetric(
+            //                 horizontal: 16,
+            //                 vertical: 8,
+            //               ),
+            //               margin: const EdgeInsets.symmetric(
+            //                 vertical: 8,
+            //               ),
+            //               decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(16),
+            //                 color: AppColor.primaryColor.withOpacity(0.1),
+            //               ),
+            //               child: Text(
+            //                 "fds",
+            //                 style: Theme.of(context).textTheme.bodySmall,
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //   ),
+            // ),
+            // Container(
+            //   margin: const EdgeInsets.symmetric(
+            //     horizontal: 24,
+            //     vertical: 16,
+            //   ),
+            //   padding: const EdgeInsets.all(8),
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(16),
+            //     border: Border.all(
+            //       color: Theme.of(context).dividerColor,
+            //     ),
+            //   ),
+            //   child: Row(
+            //     crossAxisAlignment: CrossAxisAlignment.end,
+            //     children: [
+            //       IconButton(
+            //         onPressed: () {},
+            //         splashRadius: 20,
+            //         icon: const Icon(
+            //           Icons.emoji_emotions_outlined,
+            //           size: 20,
+            //         ),
+            //       ),
+            //       const SizedBox(width: 4),
+            //       IconButton(
+            //         onPressed: () {},
+            //         splashRadius: 20,
+            //         icon: const Icon(
+            //           CupertinoIcons.photo,
+            //           size: 20,
+            //         ),
+            //       ),
+            //       const SizedBox(width: 8),
+            //       Expanded(
+            //         child: TextField(
+            //           minLines: 1,
+            //           maxLines: 5,
+            //           decoration: const InputDecoration(
+            //             border: InputBorder.none,
+            //             hintText: "Message....",
+            //           ),
+            //           style: Theme.of(context).textTheme.bodyMedium,
+            //         ),
+            //       ),
+            //       const SizedBox(width: 4),
+            //       IconButton(
+            //         onPressed: () {},
+            //         splashRadius: 20,
+            //         icon: const Icon(
+            //           CupertinoIcons.paperplane,
+            //           size: 20,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ),

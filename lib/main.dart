@@ -25,7 +25,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -44,7 +43,9 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading indicator while checking the authentication state
-            return CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasData && snapshot.data != null) {
             // User is logged in
             return HomeScreen();

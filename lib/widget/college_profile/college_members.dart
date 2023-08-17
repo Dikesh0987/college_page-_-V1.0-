@@ -111,7 +111,9 @@ class _CollegeMembersWidgetState extends State<CollegeMembersWidget> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -135,7 +137,9 @@ class _CollegeMembersWidgetState extends State<CollegeMembersWidget> {
                         builder: (context, userSnapshot) {
                           if (userSnapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
 
                           if (userSnapshot.hasError) {
