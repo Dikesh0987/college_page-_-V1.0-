@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_page/model/college_model.dart';
 import 'package:college_page/screens/auth/services/functions/collegeConn.dart';
 import 'package:college_page/screens/college_profile/college_profile.dart';
-// import 'package:college_page/screens/auth/services/functions/joinwithcolleges.dart';
-import 'package:college_page/widget/home/chat_room_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +132,10 @@ class CollegesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CollegeProfile(collegeModel: college)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CollegeProfile(collegeModel: college)));
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -186,7 +187,7 @@ class CollegesItem extends StatelessWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  image: NetworkImage(college.logo),
+                                  image: AssetImage("assets/mit.jpg"),
                                   fit: BoxFit.cover,
                                 ),
                               ),

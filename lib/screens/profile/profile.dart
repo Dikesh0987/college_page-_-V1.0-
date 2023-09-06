@@ -1,11 +1,8 @@
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
-import 'package:college_page/widget/home/members_widget.dart';
 import 'package:college_page/widget/profile/friends.dart';
 import 'package:college_page/widget/profile/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
-import 'package:college_page/widget/home/chat_room_widget.dart';
-import 'package:college_page/widget/home/chats_widget.dart';
 import 'package:college_page/widget/mobile/home_mobile_header.dart';
 
 class ProfileScreen extends StatelessWidget {

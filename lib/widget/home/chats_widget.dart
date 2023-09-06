@@ -256,12 +256,12 @@ class CollegesItem extends StatelessWidget {
                               width: 48,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    '',
-                                  ),
-                                  fit: BoxFit.cover,
+                                image: DecorationImage(image: 
+                                NetworkImage(
+                                  college.logo,
                                 ),
+                                fit: BoxFit.contain
+                                )
                               ),
                             ),
                             if (true)

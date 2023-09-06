@@ -4,7 +4,6 @@ import 'package:college_page/screens/user_profile/user_profile.dart';
 import 'package:college_page/widget/desktop/home_desktop_header.dart';
 import 'package:college_page/widget/home/members_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:college_page/core/component/widgets/responsive_screen.dart';
 import 'package:college_page/widget/home/chat_room_widget.dart';
@@ -77,11 +76,12 @@ class _DesktopLayoutState extends State<DesktopLayout> {
   }
 
   void _handlefriendButtonClicked(UserModel user) {
-
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> UserProfile(selectedUser: user,
-
-    )));
-
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => UserProfile(
+                  selectedUser: user,
+                )));
 
     setState(() {
       _selectedUser = user;
@@ -118,15 +118,19 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                     onChatButtonClicked: _handleChatButtonClicked,
                   ),
                 ),
-                const VerticalDivider(),
+
+                // When we add an select the college then we show the data/events/ in this section
+                if (_selectedCollege != null) const VerticalDivider(),
                 if (_selectedCollege != null)
                   Expanded(
                     flex: 4,
                     child: ChatRoomWidget(
                       collegeModel: _selectedCollege!,
+                   
                     ),
                   ),
-                const VerticalDivider(),
+                    // When we add an select the college then we imidetly show the college members in this section according to college unique_id 
+                if (_selectedCollege != null) const VerticalDivider(),
                 if (_selectedCollege != null)
                   Expanded(
                     flex: 2,
@@ -134,9 +138,8 @@ class _DesktopLayoutState extends State<DesktopLayout> {
                         ? MembersWidget(
                             collegeModel: _selectedCollegeMember,
                             onFriendButtonClicked: _handlefriendButtonClicked,
-                          
                           )
-                        : CircularProgressIndicator(),
+                        : const CircularProgressIndicator(),
                   ),
               ],
             ),
@@ -193,7 +196,7 @@ class _TabletLayoutState extends State<TabletLayout> {
                     onChatButtonClicked: _handleChatButtonClicked,
                   ),
                 ),
-                VerticalDivider(),
+                if (_selectedCollege != null) const VerticalDivider(),
                 if (_selectedCollege != null)
                   Expanded(
                     flex: 4,
