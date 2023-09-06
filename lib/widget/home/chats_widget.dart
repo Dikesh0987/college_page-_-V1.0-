@@ -251,18 +251,9 @@ class CollegesItem extends StatelessWidget {
                         width: 48,
                         child: Stack(
                           children: [
-                            Container(
-                              height: 48,
-                              width: 48,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(image: 
-                                NetworkImage(
-                                  college.logo,
-                                ),
-                                fit: BoxFit.contain
-                                )
-                              ),
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(college.logo),
+                              radius: 40,
                             ),
                             if (true)
                               Align(
