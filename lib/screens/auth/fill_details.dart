@@ -24,7 +24,7 @@ class _FillDetailsScreenState extends State<FillDetailsScreen> {
   final bool _verify = false;
   final bool _status = false; 
 
-  void _submitForm() {
+  void _submitForm() { 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       AuthServices.signupUser(widget.email, _password, _fullname,_verify, _status,widget.collegeSnapshot.id, context);
@@ -167,7 +167,7 @@ class _FillDetailsScreenState extends State<FillDetailsScreen> {
                           padding: const EdgeInsets.only(left: 16.0),
                           child: Text(
                             'Password',
-                            style: ralewayStyle.copyWith(
+                             style: ralewayStyle.copyWith(
                               fontSize: 12.0,
                               color: AppColor.blueDarkColor,
                               fontWeight: FontWeight.w700,
